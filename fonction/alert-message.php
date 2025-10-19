@@ -1,11 +1,11 @@
-<?php if(!empty($_SESSION['alert'])):?>
+<?php if(!empty($_SESSION['alert'])): ?>
         <script>
             $.notify({
                 icon: 'icon-bell',
                 title: 'Infos',
-                message: '<?php echo $_SESSION['alert']['message'];?>',
+                message: "<?php echo $_SESSION['alert']['message'];?>",
             },{
-                type: '<?php echo $_SESSION['alert']['type'];?>',
+                type: "<?php echo $_SESSION['alert']['type'];?>",
                 placement: {
                     from: "bottom",
                     align: "right"

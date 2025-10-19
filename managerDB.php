@@ -1,6 +1,8 @@
 <?php 
 
     require_once('./connexion/connexion.php');
+    require_once('./fonction/fonctions.php');
+
 
 	// Données entrantes
     function echapper($string)

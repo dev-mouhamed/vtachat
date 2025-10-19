@@ -34,6 +34,30 @@
     <!-- Kaiadmin DEMO methods, don't include it in your project! -->
     <script src="assets/js/setting-demo.js"></script>
     <!-- <script src="assets/js/demo.js"></script> -->
+
+
+    <!-- 👉 JS Flatpickr -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <!-- 👉 (Facultatif) Traduction FR -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
+
+    <?php include_once('../fonction/alert-message.php') ?>
+
+    <script>
+      $(document).ready(function () {
+        // Initialisation Flatpickr sur le champ
+        flatpickr("#date_vente", {
+          enableTime: true,
+          dateFormat: "Y-m-d H:i",
+          time_24hr: true,
+          defaultDate: new Date(),
+          locale: "fr"
+        });
+      });
+    </script>
+
+
     <script>
       $("#lineChart").sparkline([102, 109, 120, 99, 110, 105, 115], {
         type: "line",

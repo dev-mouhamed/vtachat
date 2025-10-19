@@ -484,4 +484,19 @@
 			
 		}
 	}
+
+	// fonction qui permet de reconstruire un montant parser
+	function dd(...$args){
+	    echo '<pre>'; // pour lisibilité dans le navigateur
+	    foreach ($args as $arg) {
+	        var_dump($arg);
+	    }
+	    echo '</pre>';
+	    die();
+	}
+
+	function montant_parse(string $valeur): string {
+	    // Enlève espaces normaux, espaces insécables et autres caractères invisibles
+	    return str_replace([' ', ' ', "\t", "\n", "\r"], '', $valeur);
+	}
 ?>
