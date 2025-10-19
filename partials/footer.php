@@ -33,7 +33,7 @@
 
     <!-- Kaiadmin DEMO methods, don't include it in your project! -->
     <script src="assets/js/setting-demo.js"></script>
-    <script src="assets/js/demo.js"></script>
+    <!-- <script src="assets/js/demo.js"></script> -->
     <script>
       $("#lineChart").sparkline([102, 109, 120, 99, 110, 105, 115], {
         type: "line",
@@ -61,4 +61,21 @@
         lineColor: "#ffa534",
         fillColor: "rgba(255, 165, 52, .14)",
       });
+
+      function alert_js(type, message)
+      {
+        $.notify({
+            icon: 'icon-bell',
+            title: 'Infos',
+            message: message,
+        },{
+            type: type,
+            placement: {
+                from: "bottom",
+                align: "right"
+            },
+            time: 1000,
+        });
+      }
+
     </script>
