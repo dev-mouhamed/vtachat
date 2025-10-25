@@ -499,4 +499,29 @@
 	    // Enlève espaces normaux, espaces insécables et autres caractères invisibles
 	    return str_replace([' ', ' ', "\t", "\n", "\r"], '', $valeur);
 	}
+
+	function statutBadge($id_statut) {
+	    switch ($id_statut) {
+	        case 1:
+	            return '<span class="badge bg-success">Payé</span>';
+	        case 2:
+	            return '<span class="badge bg-warning text-dark">Partiel</span>';
+	        case 3:
+	            return '<span class="badge bg-danger">Crédit</span>';
+	        default:
+	            return '<span class="badge bg-secondary">Inconnu</span>';
+	    }
+	}
+
+	function statutBadgePaiement($id_statut) {
+	    switch ($id_statut) {
+	        case true:
+	            return '<span class="badge bg-success">Validé</span>';
+	        case false:
+	            return '<span class="badge bg-danger text-dark">Pas Validé</span>';
+	        default:
+	            return '<span class="badge bg-secondary">Inconnu</span>';
+	    }
+	}
+
 ?>

@@ -42,7 +42,18 @@
     <!-- 👉 (Facultatif) Traduction FR -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
 
-    <?php include_once('../fonction/alert-message.php') ?>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+
+    <?php include_once('./fonction/alert-message.php'); ?>
+
+    <script>
+      $(document).ready(function () {
+        $("#basic-datatables").DataTable({
+          "order": [[1, "desc"]],
+        });
+      });
+    </script>
 
     <script>
       $(document).ready(function () {

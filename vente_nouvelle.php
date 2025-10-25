@@ -5,9 +5,7 @@
 
   if (isset($_POST['Enregistrer_vente'])) {
 
-    if(not_empty_group(
-      ['client_id', 'date_vente', 'produit', 'quantite', 'prix', 'montant_total', 'montant_regle'])
-    ){
+    if(not_empty_group(['client_id', 'date_vente', 'produit', 'quantite', 'prix', 'montant_total'])){
 
       // Récupération des données du formulaire
       $id_client     = (int)$_POST['client_id'];
@@ -38,7 +36,7 @@
               ':id_statut'     => $id_statut_paiement,
               ':date_vente'    => $date_vente,
               ':montant_total' => $montant_total,
-              ':montant_regle' => $montant_regle
+              ':montant_regle' => $id_statut_paiement == 1 ? $montant_total : $montant_regle
           ]);
 
           $id_vente = $pdo->lastInsertId();
@@ -61,9 +59,25 @@
               ]);
           }
 
+          // 🔹 Insertion dans paiements selon le statut
+          if($id_statut_paiement == 1 || $id_statut_paiement == 2){
+              $stmtPaiement = $pdo->prepare("
+                  INSERT INTO paiements (id_vente, date_paiement, montant, statut, responsable)
+                  VALUES (:id_vente, :date_paiement, :montant, :statut, :responsable)
+              ");
+              $stmtPaiement->execute([
+                  ':id_vente'     => $id_vente,
+                  ':date_paiement'=> date('Y-m-d H:i:s'),
+                  ':montant'      => $id_statut_paiement == 1 ? $montant_total : $montant_regle,
+                  ':statut'       => true,
+                  ':responsable'  => 'Système vente'
+              ]);
+          }
+
+
           $pdo->commit();
           alert_message('success', 'Vente enregistrée avec succès !');
-          header('location:vente_nouvelle.php');
+          header('location:vente_liste.php?id_vente='.$id_vente);
           die();
 
       } catch (Exception $e) {
@@ -76,6 +90,8 @@
     else
     {
       alert_message('danger', "Echec de l'enregistrement, manque des valeurs obligatoires.");
+      header('location:vente_nouvelle.php');
+      die();
     }
   }
 
