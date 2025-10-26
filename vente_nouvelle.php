@@ -501,27 +501,27 @@
 <!-- SCRIPT FORMULAIRE -->
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-  const form = document.querySelector("#formVente");
+    const form = document.querySelector("#formVente");
 
-  form.addEventListener("submit", (event) => {
-    const clientId = document.querySelector("#client_id").value;
+    form.addEventListener("submit", (event) => {
+      const clientId = document.querySelector("#client_id").value;
 
-    // Vérifie que le client a bien été sélectionné
-    if (!clientId) {
-      event.preventDefault();
-      event.stopPropagation();
-      alert_js('warning', "Veuillez sélectionner un client valide avant de continuer.");
-      return;
-    }
+      // Vérifie que le client a bien été sélectionné
+      if (!clientId) {
+        event.preventDefault();
+        event.stopPropagation();
+        alert_js('warning', "Veuillez sélectionner un client valide avant de continuer.");
+        return;
+      }
 
-    // Vérifie les autres validations Bootstrap
-    if (!form.checkValidity()) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
+      // Vérifie les autres validations Bootstrap
+      if (!form.checkValidity()) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
 
-    form.classList.add("was-validated");
+      form.classList.add("was-validated");
+    });
   });
-});
 
 </script>

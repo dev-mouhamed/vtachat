@@ -18,6 +18,99 @@
     ORDER BY id_vente DESC
   ");
 
+
+  if (isset($_POST['paiement_add'])) {
+
+    if (not_empty_group(['montant']) AND !empty($id_vente)) {
+
+      // 🔹 Récupération et nettoyage des données
+      $montant       = floatval(str_replace(' ', '', $_POST['montant']));
+      $responsable   = trim($_POST['responsable']);
+      $date_paiement = $_POST['date_paiement'] ?? date('Y-m-d H:i:s');
+
+      try {
+        $pdo->beginTransaction();
+
+        // 🔹 Récupérer la vente correspondante
+        $venteStmt = $pdo->prepare("SELECT montant_total, montant_regle FROM ventes WHERE id_vente = ?");
+        $venteStmt->execute([$id_vente]);
+        $vente = $venteStmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$vente) {
+          alert_message('danger', "Vente introuvable !");
+          header('location:vente_liste.php');
+          exit;
+        }
+
+        $montant_total = floatval($vente['montant_total']);
+        $montant_regle = floatval($vente['montant_regle']);
+        $reste_a_payer = max($montant_total - $montant_regle, 0);
+
+        // 🔸 Vérifier si le montant dépasse le reste dû
+        if ($montant > $reste_a_payer) {
+          alert_message('warning', "Le montant versé dépasse le reste à payer !");
+          header('location:vente_liste.php?id_vente=' . $id_vente);
+          exit;
+        }
+
+        // 🔹 Insertion du paiement
+        $stmt = $pdo->prepare("
+          INSERT INTO paiements (id_vente, date_paiement, montant, statut, responsable)
+          VALUES (:id_vente, :date_paiement, :montant, true, :responsable)
+        ");
+        $stmt->execute([
+          ':id_vente'      => $id_vente,
+          ':date_paiement' => $date_paiement,
+          ':montant'       => $montant,
+          ':responsable'   => $responsable
+        ]);
+
+        // 🔹 Mise à jour du total réglé
+        $sumStmt = $pdo->prepare("SELECT SUM(montant) AS total_paye FROM paiements WHERE id_vente = ?");
+        $sumStmt->execute([$id_vente]);
+        $total_paye = floatval($sumStmt->fetchColumn());
+
+        // 🔹 Déterminer le nouveau statut de paiement
+        if ($total_paye >= $montant_total) {
+          $nouveau_statut = 1; // Payé
+          $total_paye = $montant_total;
+        } elseif ($total_paye > 0) {
+          $nouveau_statut = 2; // Partiel
+        } else {
+          $nouveau_statut = 3; // Crédit
+        }
+
+        // 🔁 Mise à jour de la vente
+        $updateVente = $pdo->prepare("
+          UPDATE ventes 
+          SET montant_regle = :montant_regle, id_statut_paiement = :statut 
+          WHERE id_vente = :id_vente
+        ");
+        $updateVente->execute([
+          ':montant_regle' => $total_paye,
+          ':statut'        => $nouveau_statut,
+          ':id_vente'      => $id_vente
+        ]);
+
+        $pdo->commit();
+
+        alert_message('success', "Versement ajouté avec succès !");
+        header('location:vente_liste.php?id_vente=' . $id_vente);
+        exit;
+
+      } catch (Exception $e) {
+        $pdo->rollBack();
+        alert_message('danger', "Erreur : " . $e->getMessage());
+        header('location:vente_liste.php');
+        exit;
+      }
+    } else {
+      alert_message('danger', "Veuillez remplir tous les champs obligatoires.");
+      header('location:vente_liste.php');
+      exit;
+    }
+  }
+
 ?>
 
 <?php include_once('./partials/header.php'); ?>
@@ -145,21 +238,47 @@
 </html>
 
 <script>
-  document.getElementById("btnPrint").addEventListener("click", function() {
-    // Sélectionner le contenu à imprimer
-    const element = document.querySelector(".page-inner");
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.querySelector("#formVersement");
 
-    // Options HTML2PDF
-    const opt = {
-      margin:       0.5,
-      filename:     'facture_<?= $vente['id_vente'] ?>.pdf',
-      image:        { type: 'jpeg', quality: 0.98 },
-      html2canvas:  { scale: 2 },
-      jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
-    };
+    form.addEventListener("submit", (event) => {
 
-    // Générer le PDF
-    html2pdf().set(opt).from(element).save();
+      // Vérifie les autres validations Bootstrap
+      if (!form.checkValidity()) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+
+      form.classList.add("was-validated");
+    });
   });
+</script>
+
+<script>
+  // 🔹 Formate le nombre avec espaces (ex: 15000 → 15 000)
+  function formatNumberWithSpaces(value) {
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  }
+
+  // 🔹 Convertit la saisie en nombre (supprime espaces)
+  function parseNumber(value) {
+    return parseFloat(value.replace(/\s+/g, '').replace(',', '.')) || 0;
+  }
+
+  // 🔹 Fonction exécutée à chaque frappe
+  function formatMoney(input) {
+    const resteElement = document.getElementById('resteAffiche');
+    const reste = parseNumber(resteElement.textContent); // Récupère le reste réel
+    let value = parseNumber(input.value);
+
+    // Si le champ est vide, ne rien faire
+    if (input.value.trim() === '') return;
+
+    // Si dépasse le reste, on ramène à la valeur max
+    if (value > reste) value = reste;
+
+    // Reformater proprement avec séparateurs
+    input.value = formatNumberWithSpaces(value);
+  }
 </script>
 

@@ -66,6 +66,27 @@
           locale: "fr"
         });
       });
+
+      function formatMoney(objet , localize,fixedDecimalLength){
+        if($(objet).val() != '')
+        {
+            num= $(objet).val().split(' ').join('')+"";
+            $(objet).val(num);
+
+            var str=num;
+            var reg=new RegExp(/(\D*)(\d*(?:[\.|,]\d*)*)(\D*)/g)
+            if(reg.test(num)){
+                var pref=RegExp.$1;
+                var suf=RegExp.$3;
+                var part=RegExp.$2;
+                if(fixedDecimalLength/1)part=(part/1).toFixed(fixedDecimalLength/1);
+                if(localize)part=(part/1).toLocaleString();
+                str= pref +part.match(/(\d{1,3}(?:[\.|,]\d*)?)(?=(\d{3}(?:[\.|,]\d*)?)*$)/g ).join(' ')+suf ;
+            };
+            $(objet).val(str);
+        }
+    }
+
     </script>
 
 

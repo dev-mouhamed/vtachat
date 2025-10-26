@@ -513,8 +513,8 @@
 	    }
 	}
 
-	function statutBadgePaiement($id_statut) {
-	    switch ($id_statut) {
+	function statutBadgePaiement($statut) {
+	    switch ($statut) {
 	        case true:
 	            return '<span class="badge bg-success">Validé</span>';
 	        case false:

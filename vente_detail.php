@@ -71,9 +71,13 @@
 		   class="btn btn-success btn-sm rounded-pill px-3">
 		  <i class="fa fa-print"></i> Imprimer / PDF
 		</a>
-        <a href="vente_nouvelle.php" class="btn btn-primary btn-sm rounded-pill px-3">
-          <i class="fa fa-plus"></i> Nouvelle facture
-        </a>
+        <button class="btn btn-danger btn-sm rounded-pill px-3"
+				        data-bs-toggle="modal"
+				        data-bs-target="#modalVersement"
+				        data-id-vente="<?= $vente['id_vente'] ?>">
+				  <i class="fa fa-plus"></i> Versement
+				</button>
+
         <a href="vente_liste.php" class="btn btn-info btn-sm rounded-pill px-3">
           <i class="fa fa-list"></i> Liste des ventes
         </a>
@@ -133,12 +137,12 @@
           <div class="card shadow-sm">
 			      <div class="card-body p-2">
 			      	<div class="p-3">
-				        <h3 class="fw-bold">Facture #<?= $id_vente ?></h3>
-				        <h6 class="op-7">💡 Détails de la facture et informations client</h6>
+				        <h3 class="fw-bold">Versement facture #<?= $id_vente ?></h3>
+				        <h6 class="op-7">💡 List des versments pour cette facture</h6>
 				      </div>
 			        <div class="table-responsive">
 			          <table class="table table-striped table-hover table-sm mb-0">
-			            <thead class="table-primary">
+			            <thead class="table-danger">
 			              <tr>
 			                <th>Date</th>
 			                <th class="text-center">Responsable</th>
@@ -150,7 +154,7 @@
 			              <?php foreach($ligne_versement as $versement): ?>
 			              <tr>
 			                <td><?= date('d/m/Y H:i', strtotime($versement['date_paiement'])) ?></td>
-			                <td class="text-center"><?= htmlspecialchars($versement['responsable']) ?></td>
+			                <td class="text-center"><?= ($versement['responsable'] ?? '-') ?></td>
 			                <td class="text-end"><?= number_format($versement['montant'],0,',',' ') ?></td>
 			                <td class="text-end"><?= statutBadgePaiement($versement['statut']) ?></td>
 			              </tr>
@@ -214,6 +218,51 @@
 		</div>
 	</div>
 
+	<div class="modal fade" id="modalVersement" tabindex="-1" aria-labelledby="modalVersementLabel" aria-hidden="true">
+	  <div class="modal-dialog modal-dialog-centered">
+	    <div class="modal-content">
+
+	      <div class="modal-header bg-danger text-white">
+	        <h5 class="modal-title" id="modalVersementLabel">
+	          💰 Nouveau Versement
+	        </h5>
+	        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+	      </div>
+
+	      <form id="formVersement" action="" method="POST" class="needs-validation" novalidate autocomplete="off">
+	        <div class="modal-body">
+	          <input type="hidden" name="id_vente" id="id_vente">
+
+	          <div class="mb-3">
+						  <label for="montant" class="form-label fw-bold">Montant versé</label>
+						  
+						  <input type="text" class="form-control" id="montant" name="montant" placeholder="Entrer le montant ..." required value="<?= set_value('montant_operation') ?>" onkeyup="formatMoney(this)" pattern="([0-9]{1,3}\s?)*">
+
+						  <div class="text-muted text-end">
+						    Reste à payer : <span id="resteAffiche" class="fw-bold text-danger"><?= number_format($vente['montant_total'] - $vente['montant_regle'], 0, ',', ' ') ?></span> FCFA
+						  </div>
+						</div>
+
+	          <div class="mb-3">
+	            <label for="responsable" class="form-label">Responsable</label>
+	            <input type="text" class="form-control" id="responsable" name="responsable" placeholder="Nom du caissier">
+	          </div>
+
+	          <div class="mb-3">
+	            <label for="date_paiement" class="form-label">Date du versement</label>
+	            <input type="text" class="form-control" id="date_paiement" name="date_paiement" value="<?= date('d-m-Y H:i:s') ?>" readonly>
+	          </div>
+	        </div>
+
+	        <div class="modal-footer">
+	          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+	          <button type="submit" name="paiement_add" class="btn btn-danger">Enregistrer</button>
+	        </div>
+	      </form>
+
+	    </div>
+	  </div>
+	</div>
 
   </div>
 </div>
