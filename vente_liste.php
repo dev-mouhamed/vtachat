@@ -141,6 +141,67 @@
     #basic-datatables.table thead th {
       height: 2.0rem !important;
     }
+
+    /* 🔹 Ajustements généraux sur mobile */
+@media (max-width: 768px) {
+
+  /* Container avec marges réduites */
+  .container, .page-inner {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+
+  /* Titre plus compact */
+  h3.fw-bold {
+    font-size: 1.2rem !important;
+  }
+
+  h6.op-7 {
+    font-size: 0.85rem !important;
+  }
+
+  /* Le bouton "Nouvelle facture" prend toute la largeur */
+  .btn.btn-primary {
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  /* Table responsive (DataTables) */
+  .table-responsive {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Colonnes plus compactes */
+  #basic-datatables.table thead th,
+  #basic-datatables.table tbody td {
+    padding: 6px !important;
+    font-size: 0.75rem !important;
+    white-space: nowrap !important;
+  }
+
+  /* Boutons actions réduits */
+  #basic-datatables .btn-icon.btn-sm {
+    width: 1.8rem;
+    height: 1.8rem;
+    padding: 0 !important;
+  }
+
+  #basic-datatables i {
+    font-size: 0.75rem !important;
+  }
+
+  /* Ligne plus petite */
+  #basic-datatables.table tbody tr {
+    height: auto !important;
+  }
+}
+@media (max-width: 768px) {
+  .btn-icon {
+    margin: 0 2px !important;
+  }
+}
+
 </style>
 <body>
   <div class="wrapper">

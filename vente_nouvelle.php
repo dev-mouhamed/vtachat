@@ -101,14 +101,128 @@
 <?php include_once('./partials/header.php') ?>
 
   <style>
+    /* ✅ Ajustement global sur mobile */
+    @media (max-width: 768px) {
+
+      /* Empêche le débordement horizontal */
+      body, html {
+        overflow-x: hidden;
+      }
+
+      /* Marges et paddings plus doux */
+      .container, .page-inner, .card {
+        padding: 0.8rem !important;
+      }
+
+      /* Réduction du texte et boutons */
+      h5, h6, label, small {
+        font-size: 0.9rem;
+      }
+      button, .btn {
+        font-size: 0.8rem !important;
+        padding: 0.35rem 0.6rem !important;
+      }
+
+      /* ✅ Le tableau du panier devient scrollable horizontalement */
+      .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      /* ✅ Les cellules prennent plus de place sur mobile */
+      table.table th,
+      table.table td {
+        white-space: nowrap;
+        font-size: 0.8rem;
+      }
+
+      /* ✅ Les colonnes principales deviennent empilées */
+      .row.g-3.align-items-start {
+        flex-direction: column;
+      }
+      .col-md-3, .col-md-4, .col-md-6 {
+        width: 100% !important;
+      }
+
+      /* ✅ Les champs et zones s’étendent sur toute la largeur */
+      input, textarea, select {
+        width: 100% !important;
+      }
+
+      /* ✅ Les boutons d’enregistrement et annulation centrés */
+      .text-end.mt-3 {
+        text-align: center !important;
+      }
+
+      /* ✅ Le header de la facture devient empilé */
+      .d-flex.justify-content-between.align-items-center {
+        flex-direction: column;
+        align-items: stretch !important;
+        gap: 10px;
+      }
+
+      /* ✅ Ajustement du bloc paiement */
+      #blocPaiement, .bg-light {
+        margin-top: 1rem;
+        padding: 0.8rem !important;
+      }
+    }
+  </style>
+
+  <style>
+    /* --- Responsive panier --- */
+    @media (max-width: 768px) {
+      .panier-table table thead {
+        display: none;
+      }
+
+      .panier-table table, 
+      .panier-table tbody, 
+      .panier-table tr, 
+      .panier-table td {
+        display: block;
+        width: 100%;
+      }
+
+      .panier-table tr {
+        margin-bottom: 1rem;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        padding: 10px;
+      }
+
+      .panier-table td {
+        text-align: left;
+        border: none;
+        position: relative;
+        padding-left: 40%;
+        margin-bottom: 6px;
+      }
+
+      .panier-table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        top: 6px;
+        font-weight: 600;
+        color: #555;
+        font-size: 0.875rem;
+      }
+
+      .panier-table .removeRow {
+        width: 100%;
+      }
+    }
+    </style>
+
+  <style>
     #montant_total[readonly],
-#reste_a_payer[readonly] {
-  background-color: #fff !important; /* ou #e9ecef si tu veux gris clair */
-  cursor: not-allowed; /* optionnel : curseur interdit */
-  opacity: 1 !important;
-}
-
-
+    #reste_a_payer[readonly] {
+      background-color: #fff !important; /* ou #e9ecef si tu veux gris clair */
+      cursor: not-allowed; /* optionnel : curseur interdit */
+      opacity: 1 !important;
+    }
   </style>  
 
   <body>
@@ -191,7 +305,7 @@
                           <button type="button" id="addLigne" class="btn btn-outline-primary btn-sm rounded-pill px-2 py-1">+ Ajouter</button>
                         </div>
 
-                        <div class="table-responsive">
+                        <div class="table-responsive panier-table">
                           <table class="table table-sm table-bordered align-middle mb-0">
                             <thead class="table-light text-center small">
                               <tr>
@@ -204,13 +318,19 @@
                             </thead>
                             <tbody id="ligneContainer">
                               <tr>
-                                <td>
+                                <td data-label="Produit">
                                   <textarea name="produit[]" placeholder="Saisir le produit ..." class="form-control form-control-sm shadow-sm" rows="1" required></textarea>
                                 </td>
-                                <td><input type="text" name="quantite[]" placeholder="Saisir Qté ..." class="form-control form-control-sm quantite" required></td>
-                                <td><input type="text" name="prix[]" placeholder="Saisir Prix" class="form-control form-control-sm prix" required></td>
-                                <td class="text-center fw-semibold total-text align-middle">0</td>
-                                <td class="text-center"><button type="button" class="btn btn-sm btn-danger border removeRow py-0">✖</button></td>
+                                <td data-label="Qté">
+                                  <input type="text" name="quantite[]" placeholder="Saisir Qté ..." class="form-control form-control-sm quantite" required>
+                                </td>
+                                <td data-label="Prix">
+                                  <input type="text" name="prix[]" placeholder="Saisir Prix" class="form-control form-control-sm prix" required>
+                                </td>
+                                <td data-label="Total" class="text-center fw-semibold total-text align-middle">0</td>
+                                <td data-label="Action" class="text-center">
+                                  <button type="button" class="btn btn-sm btn-danger border removeRow py-0">✖</button>
+                                </td>
                               </tr>
                             </tbody>
                           </table>
