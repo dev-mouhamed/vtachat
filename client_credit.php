@@ -118,17 +118,66 @@ $stmt = $pdo->query("
     }
   }
 
-
-
-
-
-
-
 ?>
 
 <?php include_once('./partials/header.php'); ?>
 
 <style>
+
+  /* 📱 Responsive Mobile */
+  @media (max-width: 768px) {
+
+    /* Container */
+    .page-inner {
+      padding: 0.5rem !important;
+    }
+
+    h3.fw-bold {
+      font-size: 1.2rem !important;
+    }
+
+    h6.op-7 {
+      font-size: 0.85rem !important;
+    }
+
+    /* Table */
+    .table-responsive {
+      overflow-x: auto;
+    }
+
+    #basic-datatables.table thead {
+      display: none; /* ❌ Cache l’entête trop large pour téléphone */
+    }
+
+    #basic-datatables.table tr {
+      display: block;
+      margin-bottom: 1rem;
+      border: 1px solid #eee;
+      border-radius: 10px;
+      padding: 0.7rem;
+      background: #fff;
+    }
+
+    #basic-datatables.table td {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      padding: 0.4rem 0 !important;
+    }
+
+    #basic-datatables.table td:before {
+      content: attr(data-label);
+      font-weight: bold;
+      color: #555;
+    }
+
+    /* Boutons */
+    .btn-icon.btn-sm {
+      width: 2rem;
+      height: 2rem;
+    }
+  }
+
   /* Tableau compact et lisible */
   #basic-datatables.table thead th,
   #basic-datatables.table tbody td {
@@ -191,23 +240,31 @@ $stmt = $pdo->query("
                         <tbody class="small">
                           <?php while ($row = $stmt->fetch(PDO::FETCH_ASSOC)): ?>
                             <tr onclick="goToClient(<?= $row['id_client'] ?>)" style="cursor: pointer;">
-                              <td><?= htmlspecialchars($row['client']) ?></td>
-                              <td class="text-center" ><?= htmlspecialchars($row['telephone'] ?? '-') ?></td>
-                              <td class="text-end text-primary fw-bold">
-                                <?= number_format($row['total_achats'], 0, ',', ' ') ?> FCFA
-                              </td>
-                              <td class="text-end text-success fw-bold">
-                                <?= number_format($row['total_regle'], 0, ',', ' ') ?> FCFA
-                              </td>
-                              <td class="text-end text-danger fw-bold">
-                                <?= number_format($row['reste_a_payer'], 0, ',', ' ') ?> FCFA
-                              </td>
-                              <td class="text-center">
-                                <a href="client_credit.php?id_client=<?= $row['id_client'] ?>" 
-                                  class="btn btn-icon btn-sm btn-info me-1" title="Détails des ventes">
-                                  <i class="fa fa-eye"></i>
-                                </a>
-                              </td>
+                              <td data-label="Client"><?= htmlspecialchars($row['client']) ?></td>
+
+                                <td data-label="Téléphone" class="text-center">
+                                  <?= htmlspecialchars($row['telephone'] ?? '-') ?>
+                                </td>
+
+                                <td data-label="Total achats" class="text-end text-primary fw-bold">
+                                  <?= number_format($row['total_achats'], 0, ',', ' ') ?> FCFA
+                                </td>
+
+                                <td data-label="Total réglé" class="text-end text-success fw-bold">
+                                  <?= number_format($row['total_regle'], 0, ',', ' ') ?> FCFA
+                                </td>
+
+                                <td data-label="Reste à payer" class="text-end text-danger fw-bold">
+                                  <?= number_format($row['reste_a_payer'], 0, ',', ' ') ?> FCFA
+                                </td>
+
+                                <td data-label="Actions" class="text-center">
+                                  <a href="client_credit.php?id_client=<?= $row['id_client'] ?>" 
+                                    class="btn btn-icon btn-sm btn-info">
+                                    <i class="fa fa-eye"></i>
+                                  </a>
+                                </td>
+
                             </tr>
                           <?php endwhile; ?>
                         </tbody>

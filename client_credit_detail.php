@@ -43,6 +43,96 @@ foreach ($ventes as $v) {
 
 <?php include_once('./partials/header.php'); ?>
 
+
+<style>
+  /* 📱 RESPONSIVE MOBILE */
+  @media (max-width: 768px) {
+
+    /* ESPACE GLOBAL SUR MOBILE */
+  .page-inner,
+  .container,
+  body {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+    /* Titres */
+    h3.fw-bold {
+      font-size: 1.3rem !important;
+    }
+
+    h6.op-7 {
+      font-size: 0.9rem !important;
+    }
+
+    /* Cartes client & résumé */
+    .card {
+      margin-bottom: 1rem;
+    }
+
+    .card-header h5 {
+      font-size: 1rem !important;
+    }
+
+    /* TABLE RESPONSIVE TYPE CARDS */
+    .table-responsive thead {
+      display: none !important;
+    }
+
+    .table-responsive tbody tr {
+      display: block;
+      background: #fff;
+      margin-bottom: 1rem;
+      border-radius: 10px;
+      padding: 0.8rem;
+      border: 1px solid #eee;
+    }
+
+    .table-responsive tbody tr td {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.45rem 0 !important;
+      font-size: 0.9rem;
+    }
+
+    .table-responsive tbody tr td:before {
+      content: attr(data-label);
+      font-weight: bold;
+      color: #444;
+    }
+
+    .btn-icon.btn-sm {
+      width: 2rem !important;
+      height: 2rem !important;
+    }
+
+    /* Footer tableau */
+    tfoot {
+      display: block;
+    }
+
+    tfoot tr {
+      display: block;
+      padding: 0.8rem;
+      background: #f8f9fa;
+      border-radius: 10px;
+      margin-top: 1rem;
+    }
+
+    tfoot td {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.3rem 0;
+    }
+
+    /* Modal responsive */
+    .modal-dialog {
+      max-width: 95% !important;
+    }
+  }
+
+</style>
+
 <div class="container">
   <div class="page-inner">
 
@@ -132,17 +222,33 @@ foreach ($ventes as $v) {
                     <?php foreach ($ventes as $i => $vente): 
                       $reste = $vente['montant_total'] - $vente['montant_regle']; ?>
                       <tr>
-                        <td><?= $i + 1 ?></td>
-                        <td><?= date('d/m/Y H:i', strtotime($vente['date_vente'])) ?></td>
-                        <td class="text-end text-primary"><?= number_format($vente['montant_total'], 0, ',', ' ') ?></td>
-                        <td class="text-end text-success"><?= number_format($vente['montant_regle'], 0, ',', ' ') ?></td>
-                        <td class="text-end text-danger"><?= number_format($reste, 0, ',', ' ') ?></td>
-                        <td class="text-center"><?= statutBadge($vente['id_statut_paiement']) ?></td>
-                        <td class="text-center">
+                        <td data-label="#"> <?= $i + 1 ?> </td>
+                        <td data-label="Date">
+                          <?= date('d/m/Y H:i', strtotime($vente['date_vente'])) ?>
+                        </td>
+
+                        <td data-label="Montant total" class="text-end text-primary">
+                          <?= number_format($vente['montant_total'], 0, ',', ' ') ?>
+                        </td>
+
+                        <td data-label="Réglé" class="text-end text-success">
+                          <?= number_format($vente['montant_regle'], 0, ',', ' ') ?>
+                        </td>
+
+                        <td data-label="Reste" class="text-end text-danger">
+                          <?= number_format($reste, 0, ',', ' ') ?>
+                        </td>
+
+                        <td data-label="Statut" class="text-center">
+                          <?= statutBadge($vente['id_statut_paiement']) ?>
+                        </td>
+
+                        <td data-label="Actions" class="text-center">
                           <a href="vente_liste.php?id_vente=<?= $vente['id_vente'] ?>" 
-                             class="btn btn-icon btn-sm btn-info me-1" title="Détails facture">
+                            class="btn btn-icon btn-sm btn-info me-1">
                             <i class="fa fa-eye"></i>
                           </a>
+
                           <button class="btn btn-icon btn-sm btn-danger"
                                   data-bs-toggle="modal"
                                   data-bs-target="#modalVersement"

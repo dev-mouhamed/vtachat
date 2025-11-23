@@ -20,12 +20,107 @@
 
 	// Exemple pour récupérer les lignes de vente
 	$stmt_versement = $pdo->prepare("
-	    SELECT *  FROM paiements WHERE id_vente = :id_vente
+	    SELECT *  FROM paiements WHERE id_vente = :id_vente ORDER BY id_paiement DESC
 	");
 	$stmt_versement->execute(['id_vente' => $id_vente]);
 	$ligne_versement = $stmt_versement->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
+
+<style>
+	@media (max-width: 768px) {
+  .container,
+  .page-inner,
+  .card-body,
+  .tab-content,
+  .table-responsive {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  /* Pour éviter les éléments collés */
+  .row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  .col-md-8,
+  .col-md-4 {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  /* Les cartes doivent respirer un peu */
+  .card {
+    margin-left: 5px !important;
+    margin-right: 5px !important;
+    border-radius: 10px !important;
+  }
+}
+@media (max-width: 768px) {
+  /* STYLE CARDS POUR TABLE FACTURE */
+  #pills-home-icon .table-responsive thead {
+    display: none !important;
+  }
+
+  #pills-home-icon .table-responsive tbody tr {
+    display: block;
+    background: #fff;
+    margin-bottom: 1rem;
+    border-radius: 10px;
+    padding: 0.8rem;
+    border: 1px solid #eee;
+  }
+
+  #pills-home-icon .table-responsive tbody tr td {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.45rem 0 !important;
+    font-size: 0.9rem;
+  }
+
+  #pills-home-icon .table-responsive tbody tr td:before {
+    content: attr(data-label);
+    font-weight: bold;
+    color: #444;
+  }
+}
+
+@media (max-width: 768px) {
+
+  /* Désactiver le thead uniquement pour ce tableau */
+  #pills-profile-icon .table-responsive thead {
+    display: none !important;
+  }
+
+  /* Chaque ligne devient une carte */
+  #pills-profile-icon .table-responsive tbody tr {
+    display: block;
+    background: #fff;
+    margin-bottom: 1rem;
+    border-radius: 10px;
+    padding: 0.8rem;
+    border: 1px solid #eee;
+  }
+
+  /* Les cellules se réorganisent */
+  #pills-profile-icon .table-responsive tbody tr td {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.45rem 0 !important;
+    font-size: 0.9rem;
+  }
+
+  /* Le label avant chaque valeur */
+  #pills-profile-icon .table-responsive tbody tr td:before {
+    content: attr(data-label);
+    font-weight: bold;
+    color: #444;
+  }
+}
+
+
+</style>
 
 <div class="container">
   <div class="page-inner">
@@ -114,15 +209,16 @@
 			              </tr>
 			            </thead>
 			            <tbody>
-			              <?php foreach($ligne_ventes as $ligne): ?>
-			              <tr>
-			                <td><?= htmlspecialchars($ligne['produit']) ?></td>
-			                <td class="text-center"><?= number_format($ligne['quantite'],0,',',' ') ?></td>
-			                <td class="text-end"><?= number_format($ligne['prix'],0,',',' ') ?></td>
-			                <td class="text-end"><?= number_format($ligne['total'],0,',',' ') ?></td>
-			              </tr>
-			              <?php endforeach; ?>
-			            </tbody>
+							<?php foreach($ligne_ventes as $ligne): ?>
+							<tr>
+								<td data-label="Produit"><?= htmlspecialchars($ligne['produit']) ?></td>
+								<td data-label="Quantité" class="text-center"><?= number_format($ligne['quantite'],0,',',' ') ?></td>
+								<td data-label="PU" class="text-end"><?= number_format($ligne['prix'],0,',',' ') ?></td>
+								<td data-label="Total" class="text-end"><?= number_format($ligne['total'],0,',',' ') ?></td>
+							</tr>
+							<?php endforeach; ?>
+						</tbody>
+
 			          </table>
 			        </div>
 			      </div>
@@ -151,15 +247,27 @@
 			              </tr>
 			            </thead>
 			            <tbody>
-			              <?php foreach($ligne_versement as $versement): ?>
-			              <tr>
-			                <td><?= date('d/m/Y H:i', strtotime($versement['date_paiement'])) ?></td>
-			                <td class="text-center"><?= ($versement['responsable'] ?? '-') ?></td>
-			                <td class="text-end"><?= number_format($versement['montant'],0,',',' ') ?></td>
-			                <td class="text-end"><?= statutBadgePaiement($versement['statut']) ?></td>
-			              </tr>
-			              <?php endforeach; ?>
-			            </tbody>
+							<?php foreach($ligne_versement as $versement): ?>
+							<tr>
+								<td data-label="Date">
+								<?= date('d/m/Y H:i', strtotime($versement['date_paiement'])) ?>
+								</td>
+
+								<td data-label="Responsable" class="text-center">
+								<?= ($versement['responsable'] ?? '-') ?>
+								</td>
+
+								<td data-label="Montant" class="text-end">
+								<?= number_format($versement['montant'],0,',',' ') ?>
+								</td>
+
+								<td data-label="Statut" class="text-end">
+								<?= statutBadgePaiement($versement['statut']) ?>
+								</td>
+							</tr>
+							<?php endforeach; ?>
+						</tbody>
+
 			          </table>
 			        </div>
 			      </div>
