@@ -54,7 +54,7 @@ body { font-family: 'Arial', sans-serif; }
       <div class="card p-2">
         <table class="table table-sm table-borderless mb-0">
           <tbody>
-            <tr><th>Client</th><td><?= htmlspecialchars($vente['client']) ?></td></tr>
+            <tr><th>Client</th><td><?= htmlspecialchars($vente['client'] ?? '') ?></td></tr>
             <tr><th>Statut</th><td><?= statutBadge($vente['id_statut_paiement']) ?></td></tr>
           </tbody>
         </table>
@@ -92,7 +92,7 @@ body { font-family: 'Arial', sans-serif; }
         <tbody>
           <?php foreach($ligne_ventes as $ligne): ?>
           <tr>
-            <td><?= htmlspecialchars($ligne['produit']) ?></td>
+            <td><?= htmlspecialchars($ligne['produit'] ?? '') ?></td>
             <td class="text-center"><?= number_format($ligne['quantite'],0,',',' ') ?></td>
             <td class="text-end"><?= number_format($ligne['prix'],0,',',' ') ?></td>
             <td class="text-end"><?= number_format($ligne['total'],0,',',' ') ?></td>

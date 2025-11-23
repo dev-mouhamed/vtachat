@@ -211,7 +211,7 @@
 			            <tbody>
 							<?php foreach($ligne_ventes as $ligne): ?>
 							<tr>
-								<td data-label="Produit"><?= htmlspecialchars($ligne['produit']) ?></td>
+								<td data-label="Produit"><?= htmlspecialchars($ligne['produit'] ?? '') ?></td>
 								<td data-label="Quantité" class="text-center"><?= number_format($ligne['quantite'],0,',',' ') ?></td>
 								<td data-label="PU" class="text-end"><?= number_format($ligne['prix'],0,',',' ') ?></td>
 								<td data-label="Total" class="text-end"><?= number_format($ligne['total'],0,',',' ') ?></td>
@@ -284,7 +284,7 @@
 		          <tbody>
 		            <tr>
 		              <th class="fw-bold" style="width: 100px;">Client</th>
-		              <td><?= htmlspecialchars($vente['client']) ?></td>
+		              <td><?= htmlspecialchars($vente['client'] ?? '') ?></td>
 		            </tr>
 		            <tr>
 		              <th class="fw-bold">Date</th>

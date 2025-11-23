@@ -2,10 +2,10 @@
 	// fonctions pour renvoyer les informations en cas d'erreur
 	function set_value($input_name='', $value=null){
 		if(isset($_POST[$input_name])){
-			echo htmlspecialchars($_POST[$input_name]);
+			echo htmlspecialchars($_POST[$input_name] ?? '');
 		}
 		else if(isset($value)){
-			echo htmlspecialchars($value);
+			echo htmlspecialchars($value ?? '');
 		}
 	}
 
@@ -138,7 +138,7 @@
 		if(count(explode('-', $date)) == 3){
 			list($annee, $mois, $jour)	=	explode('-', $date);
 			if(checkdate($mois, $jour, $annee)){
-				return htmlspecialchars($jour.'-'.$mois.'-'.$annee);
+				return htmlspecialchars($jour.'-'.$mois.'-'.$annee  ?? '');
 			}
 			else{
 				return $date;
@@ -158,20 +158,20 @@
 	// fonction de convertion d'une date sous la forme Y_M_D
 	function A_M_J($date)
 	{
-		return empty($date) ? null : htmlspecialchars(date("Y-m-d", strtotime($date)));
+		return empty($date) ? null : htmlspecialchars(date("Y-m-d", strtotime($date)) ?? '');
 	}
 
 
 	// fonction de convertion d'une date sous la forme Y_M_D
 	function H_M_S($date)
 	{
-		return empty($date) ? null : htmlspecialchars(date("H:i:s", strtotime($date)));
+		return empty($date) ? null : htmlspecialchars(date("H:i:s", strtotime($date)) ?? '');
 	}
 
 	// fonction de convertion d'une date sous la forme Y_M_D
 	function H_M($date)
 	{
-		return empty($date) ? null : htmlspecialchars(date("H:i", strtotime($date)));
+		return empty($date) ? null : htmlspecialchars(date("H:i", strtotime($date)) ?? '');
 	}
 
 
@@ -295,7 +295,7 @@
 	// fonction qui va afficher un nombre en bloc de 3 chiffre
 	function b_c_3($nombre, $decimals = 0, $dec_point = '.'){
 
-		return htmlspecialchars(number_format ( $nombre , $decimals, $dec_point , $thousands_sep = ' ' ));
+		return htmlspecialchars(number_format ( $nombre , $decimals, $dec_point , $thousands_sep = ' ' ) ?? '');
 	}
 	
 	// fonction qui va permettre de savoir si une personne a droit a une action

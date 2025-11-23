@@ -164,9 +164,9 @@
                           ?>
                             <tr>
                               <td class="py-1 px-2"><?= $i++ ?></td>
-                              <td class="py-1 px-2"><?= htmlspecialchars($row['nom']) ?></td>
-                              <td class="py-1 px-2"><?= htmlspecialchars($row['telephone']) ?></td>
-                              <td class="py-1 px-2"><?= htmlspecialchars($row['adresse']) ?></td>
+                              <td class="py-1 px-2"><?= htmlspecialchars($row['nom'] ?? '') ?></td>
+                              <td class="py-1 px-2"><?= htmlspecialchars($row['telephone'] ?? '') ?></td>
+                              <td class="py-1 px-2"><?= htmlspecialchars($row['adresse']?? '') ?></td>
                               <td class="text-center py-1 px-2">
                                 <a href="client_liste.php?id_edit=<?= $row['id_client'] ?>" class="btn btn-icon btn-sm btn-warning me-1 p-1" title="Modifier">
                                   <i class="fa fa-edit" style="font-size: 0.75rem;"></i>

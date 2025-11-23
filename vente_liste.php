@@ -351,7 +351,7 @@
                             }
                             $reste = max($vente['montant_total'] - $vente['montant_regle'], 0); ?>
                             <tr style="border-left: 5px solid <?= $color ?>;">
-                              <td data-label="Client"><?= htmlspecialchars($vente['client']) ?></td>
+                              <td data-label="Client"><?= htmlspecialchars($vente['client'] ?? '') ?></td>
                               <td class="text-center" data-label="Date">
                                 <?= date('d/m/Y H:i', strtotime($vente['date_vente'])) ?>
                               </td>
