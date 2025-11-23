@@ -26,7 +26,9 @@
       // 🔹 Récupération et nettoyage des données
       $montant       = floatval(str_replace(' ', '', $_POST['montant']));
       $responsable   = trim($_POST['responsable']);
-      $date_paiement = $_POST['date_paiement'] ?? date('Y-m-d H:i:s');
+      $date_paiement = date('Y-m-d');
+
+      // dd($montant,$responsable, $date_paiement);
 
       try {
         $pdo->beginTransaction();
@@ -111,11 +113,100 @@
     }
   }
 
+
+
 ?>
 
 <?php include_once('./partials/header.php'); ?>
 
 <style>
+
+  /* 📱 Amélioration générale mobile */
+@media (max-width: 768px) {
+
+  /* Évite que tout soit collé aux bords */
+  .container, .page-inner {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  /* Largeur des cartes */
+  .card {
+    border-radius: 12px;
+    padding: 0 !important;
+    margin-bottom: 1rem !important;
+  }
+
+  .card-body {
+    padding: 12px !important;
+  }
+
+  /* Titres */
+  h3.fw-bold {
+    font-size: 1.25rem !important;
+  }
+  h6.op-7 {
+    font-size: 0.9rem !important;
+  }
+
+  /* Bouton "Nouvelle facture" */
+  .btn.btn-primary {
+    width: 100% !important;
+    font-size: 0.9rem;
+    padding: 10px;
+  }
+
+  /* Table DataTables */
+  #basic-datatables.table thead {
+    display: none !important; /* Cache les têtes en mobile */
+  }
+
+  #basic-datatables.table tbody tr {
+    display: block;
+    background: white;
+    margin-bottom: 1rem;
+    padding: 12px;
+    border-radius: 10px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.06);
+  }
+
+  /* Chaque cellule devient une ligne */
+  #basic-datatables.table tbody td {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem !important;
+    padding: 6px 0 !important;
+    border-bottom: 1px dashed #ddd;
+  }
+
+  /* Dernière ligne sans bordure */
+  #basic-datatables.table tbody td:last-child {
+    border-bottom: none;
+  }
+
+  /* Ajout des labels (ex: "Client :", "Date :") */
+  #basic-datatables.table tbody td:before {
+    content: attr(data-label);
+    font-weight: bold;
+    color: #444;
+  }
+
+  /* Boutons actions plus grands pour les doigts */
+  .btn-icon.btn-sm {
+    width: 2rem !important;
+    height: 2rem !important;
+    padding: 0 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn-icon i {
+    font-size: 0.85rem !important;
+  }
+}
+
+
   /* Tableau compact */
     #basic-datatables.table thead th,
     #basic-datatables.table tbody td {
@@ -242,30 +333,48 @@
                         </thead>
                         <tbody class="small">
                           <?php while ($vente = $stmt->fetch(PDO::FETCH_ASSOC)) : 
+                            // Couleur du statut
+                            $color = "";
+                            switch ($vente['id_statut_paiement']) {
+                                case 1:
+                                    $color = "#28a745"; // Payé
+                                    break;
+                                case 2:
+                                    $color = "#fd7e14"; // Partiel
+                                    break;
+                                case 3:
+                                    $color = "#dc3545"; // Crédit
+                                    break;
+                                default:
+                                    $color = "#6c757d";
+                                    break;
+                            }
                             $reste = max($vente['montant_total'] - $vente['montant_regle'], 0); ?>
-                            <tr>
-                              <td class="py-1 px-2">
-                                <?= htmlspecialchars($vente['client']) ?>
-                              </td>
-                              <td class="text-center py-1 px-2">
+                            <tr style="border-left: 5px solid <?= $color ?>;">
+                              <td data-label="Client"><?= htmlspecialchars($vente['client']) ?></td>
+                              <td class="text-center" data-label="Date">
                                 <?= date('d/m/Y H:i', strtotime($vente['date_vente'])) ?>
                               </td>
-                              <td class="text-end py-1 px-2">
+
+                              <td class="text-end" data-label="Total">
                                 <?= number_format($vente['montant_total'], 0, ',', ' ') ?>
                               </td>
-                              <td class="text-end py-1 px-2">
-                                <?= number_format($vente['id_statut_paiement'] != 1 ? $vente['montant_regle'] : $vente['montant_total'], 0, ',', ' ') ?>
+
+                              <td class="text-end" data-label="Réglé">
+                                <?= number_format($vente['montant_regle'], 0, ',', ' ') ?>
                               </td>
-                              <td class="text-center py-1 px-2">
+
+                              <td class="text-center" data-label="Statut">
                                 <?= statutBadge($vente['id_statut_paiement']) ?>
                               </td>
-                              <td class="text-center py-1 px-2">
+
+                              <td class="text-center" data-label="Actions">
                                 <a href="vente_liste.php?id_vente=<?= $vente['id_vente'] ?>" class="btn btn-icon btn-sm btn-info me-1 p-1" title="Voir">
                                   <i class="fa fa-eye" style="font-size: 0.75rem;"></i>
                                 </a>
-                                <a href="vente_nouvelle.php?id_vente=<?= $vente['id_vente'] ?>" class="btn btn-icon btn-sm btn-primary me-1 p-1" title="Modifier">
+                                <!-- <a href="vente_nouvelle.php?id_vente=<?= $vente['id_vente'] ?>" class="btn btn-icon btn-sm btn-primary me-1 p-1" title="Modifier">
                                   <i class="fa fa-pencil-alt" style="font-size: 0.75rem;"></i>
-                                </a>
+                                </a> -->
                                 <a href="vente_delete.php?id=<?= $vente['id_vente'] ?>" class="btn btn-icon btn-sm btn-danger p-1" title="Supprimer" onclick="return confirm('Confirmer la suppression ?')">
                                   <i class="fa fa-trash" style="font-size: 0.75rem;"></i>
                                 </a>
